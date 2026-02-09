@@ -18,7 +18,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: eureka-server
-          image: ghcr.io/esic-project-cloud/eureka-server:main
+          image: smartevent-ia-eureka-server:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8761
