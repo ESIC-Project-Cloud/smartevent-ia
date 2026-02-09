@@ -18,7 +18,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: gateway-service
-          image: registry.github.com/ESIC-Project-Cloud/smartevent-ia/edit/K8s/gateway-service
+          image: registry.github.com/ESIC-Project-Cloud/smartevent-ia/tree/K8s/gateway-service
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
