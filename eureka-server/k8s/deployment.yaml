@@ -20,7 +20,7 @@ spec:
   - name: auth-service
     securityContext:
       allowPrivilegeEscalation: false
-    image: eureka-server:latest
+    image: smartevent-ia-eureka-server:latest
     imagePullPolicy: Always
     ports:
     - containerPort: 8080

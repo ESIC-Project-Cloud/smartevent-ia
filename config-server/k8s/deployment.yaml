@@ -1,4 +1,4 @@
-# apiVersion: apps/v1
+#apiVersion: apps/v1
 # kind: Deployment
 # metadata:
 #   name: config-server
@@ -20,7 +20,7 @@
 #       - name: config-server
 #         securityContext:
 #           allowPrivilegeEscalation: false
-#         image: registry.gitlab.com/smarteventapp/config-server:main
+#         image: config-server:latest
 #         imagePullPolicy: Always
 #         ports:
 #         - containerPort: 8888
