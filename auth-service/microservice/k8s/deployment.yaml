@@ -13,7 +13,7 @@ spec:
         app: auth-service
     spec:
       nodeSelector:
-        role: micro   # ⚠️ BACKEND → node micro (TP)
+        role: micro 
       securityContext:
         runAsNonRoot: true
       containers:
