@@ -21,7 +21,7 @@ spec:
         securityContext:
           allowPrivilegeEscalation: false
         image: smartevent-ia-config-server:latest
-        imagePullPolicy: Always
+        imagePullPolicy: Never
         ports:
         - containerPort: 8888
         resources:
