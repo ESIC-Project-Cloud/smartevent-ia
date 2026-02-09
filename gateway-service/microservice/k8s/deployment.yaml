@@ -18,7 +18,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: gateway-service
-          image: ghcr.io/esic-project-cloud/gateway-service:main
+          image: smartevent-ia-gateway-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
