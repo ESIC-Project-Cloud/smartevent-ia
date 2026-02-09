@@ -18,7 +18,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: config-server
-          image: registry.github.com/ESIC-Project-Cloud/smartevent-ia/tree/K8s/config-server
+          image: ghcr.io/esic-project-cloud/config-server:main
           imagePullPolicy: Always
           ports:
             - containerPort: 8888
