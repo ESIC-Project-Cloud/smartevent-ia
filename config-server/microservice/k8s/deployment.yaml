@@ -18,7 +18,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: config-server
-          image: ghcr.io/esic-project-cloud/config-server:main
+          image: smartevent-ia-config-server:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8888
