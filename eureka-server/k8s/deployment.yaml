@@ -17,7 +17,7 @@ spec:
     nodeSelector:
       role: micro
   containers:
-  - name: auth-service
+  - name: eureka-server
     securityContext:
       allowPrivilegeEscalation: false
     image: smartevent-ia-eureka-server:latest
