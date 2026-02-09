@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eureka-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka-server
+  template:
+    metadata:
+      labels:
+        app: eureka-server
+  spec:
+    securityContext:
+      runAsNonRoot: true
+    nodeSelector:
+      role: micro
+  containers:
+  - name: auth-service
+    securityContext:
+      allowPrivilegeEscalation: false
+    image: eureka-server:latest
+    imagePullPolicy: Always
+    ports:
+    - containerPort: 8080
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "50m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
