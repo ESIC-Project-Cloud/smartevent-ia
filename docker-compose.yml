@@ -18,7 +18,7 @@ services:
       retries: 20
 
   eureka-server:
-    image: ghcr.io/ESIC-Project-Cloud/smartevent-ia-eureka-server:latest
+    image: ghcr.io/esic-project-cloud/smartevent-ia-eureka-server:latest
     build:
       context: .
       dockerfile: eureka-server/Dockerfile
@@ -36,7 +36,7 @@ services:
       retries: 30
 
   config-server:
-    image: ghcr.io/ESIC-Project-Cloud/smartevent-ia-config-server:latest
+    image: ghcr.io/esic-project-cloud/smartevent-ia-config-server:latest
     build:
       context: .
       dockerfile: config-server/Dockerfile
@@ -62,7 +62,7 @@ services:
       retries: 30
 
   auth-service:
-    image: ghcr.io/ESIC-Project-Cloud/smartevent-ia-auth-service:latest
+    image: ghcr.io/esic-project-cloud/smartevent-ia-auth-service:latest
     build:
       context: .
       dockerfile: auth-service/Dockerfile
@@ -91,7 +91,7 @@ services:
       retries: 30
 
   event-service:
-    image: ghcr.io/ESIC-Project-Cloud/smartevent-ia-event-service:latest
+    image: ghcr.io/esic-project-cloud/smartevent-ia-event-service:latest
     build:
       context: .
       dockerfile: event-service/Dockerfile
@@ -120,7 +120,7 @@ services:
       retries: 30
 
   ai-service:
-    image: ghcr.io/ESIC-Project-Cloud/smartevent-ia-ai-service:latest
+    image: ghcr.io/esic-project-cloud/smartevent-ia-ai-service:latest
     build: ./ai-service
     container_name: smartevent_ai
     ports:
@@ -145,7 +145,7 @@ services:
       retries: 30
 
   workflow-service:
-    image: ghcr.io/ESIC-Project-Cloud/smartevent-ia-workflow-service:latest
+    image: ghcr.io/esic-project-cloud/smartevent-ia-workflow-service:latest
     build: ./workflow-service
     container_name: smartevent_workflow
     ports:
@@ -173,7 +173,7 @@ services:
       retries: 30
 
   gateway-service:
-    image: ghcr.io/ESIC-Project-Cloud/smartevent-ia-gateway-service:latest
+    image: ghcr.io/esic-project-cloud/smartevent-ia-gateway-service:latest
     build:
       context: .
       dockerfile: gateway-service/Dockerfile
@@ -216,7 +216,7 @@ services:
 
   # UI (optionnel). Active avec: docker compose --profile ui up
   front:
-    image: ghcr.io/ESIC-Project-Cloud/smartevent-ia-front:latest
+    image: ghcr.io/esic-project-cloud/smartevent-ia-front:latest
     build: ./front
     profiles: ["ui"]
     container_name: smartevent_front
@@ -227,7 +227,7 @@ services:
         condition: service_healthy
 
   frontadmin:
-    image: ghcr.io/ESIC-Project-Cloud/smartevent-ia-front-admin:latest
+    image: ghcr.io/esic-project-cloud/smartevent-ia-front-admin:latest
     build: ./frontAdmin
     profiles: ["ui"]
     container_name: smartevent_front_admin
