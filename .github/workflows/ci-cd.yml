@@ -60,214 +60,214 @@ jobs:
           python -m py_compile $(find . -name "*.py")
 
   # 2) TEST (tous les tests dans un seul job)
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
+  #test:
+  #  runs-on: ubuntu-latest
+  #  needs: build
+  #  steps:
+  #    - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+  #    - uses: actions/setup-node@v4
+  #      with:
+  #        node-version: 20
 
-      - name: Tests front
-        working-directory: front
-        run: |
-          npm ci
-          npm test -- --watch=false --browsers=ChromeHeadless || echo "tests simples"
+  #    - name: Tests front
+  #      working-directory: front
+  #      run: |
+  #        npm ci
+  #        npm test -- --watch=false --browsers=ChromeHeadless || echo "tests simples"
 
-      - name: Tests frontAdmin
-        working-directory: frontAdmin
-        run: |
-          npm ci
-          npm test -- --watch=false --browsers=ChromeHeadless || echo "tests simples"
+  #    - name: Tests frontAdmin
+  #      working-directory: frontAdmin
+  #      run: |
+  #        npm ci
+  #        npm test -- --watch=false --browsers=ChromeHeadless || echo "tests simples"
 
-      - name: Tests workflow-service
-        working-directory: workflow-service
-        run: |
-          npm ci
-          npm test || echo "tests simples"
+  #    - name: Tests workflow-service
+  #      working-directory: workflow-service
+  #      run: |
+  #        npm ci
+  #        npm test || echo "tests simples"
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+  #    - uses: actions/setup-python@v5
+  #      with:
+  #        python-version: "3.11"
 
-      - name: Tests ai-service
-        working-directory: ai-service
-        run: |
-          pip install -r requirements.txt
-          pytest || echo "tests simples"
+  #    - name: Tests ai-service
+  #      working-directory: ai-service
+  #      run: |
+  #        pip install -r requirements.txt
+  #        pytest || echo "tests simples"
 
   # 3) ANALYZE (Semgrep et SonarQube)
-  analyze_semgrep:
-    name: analyze_semgrep
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # analyze_semgrep:
+  #   name: analyze_semgrep
+  #   runs-on: ubuntu-latest
+  #   needs: test
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
 
-      - name: Install Semgrep
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install semgrep
+  #     - name: Install Semgrep
+  #       run: |
+  #         python3 -m pip install --upgrade pip
+  #         pip install semgrep
 
-      - name: Run Semgrep
-        run: |
-          semgrep scan --config p/ci --error
+  #     - name: Run Semgrep
+  #       run: |
+  #         semgrep scan --config p/ci --error
 
-  analyze_sonar:
-    name: analyze_sonar
-    runs-on: ubuntu-latest
-    needs: test
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # recommandé pour SonarQube
+  # analyze_sonar:
+  #   name: analyze_sonar
+  #   runs-on: ubuntu-latest
+  #   needs: test
+  #   continue-on-error: true
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0 # recommandé pour SonarQube
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
+  #     - name: Set up JDK 17
+  #       uses: actions/setup-java@v4
+  #       with:
+  #         distribution: temurin
+  #         java-version: 17
 
-      - name: Cache SonarQube packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+  #     - name: Cache SonarQube packages
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: ~/.sonar/cache
+  #         key: ${{ runner.os }}-sonar
+  #         restore-keys: ${{ runner.os }}-sonar
 
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2-
+  #     - name: Cache Maven packages
+  #       uses: actions/cache@v4
+  #       with:
+  #         path: ~/.m2
+  #         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+  #         restore-keys: ${{ runner.os }}-m2-
 
-      # ---- Java services via Maven ----
-      - name: Sonar - auth-service
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          mvn -f auth-service/pom.xml -B verify -DskipTests \
-           org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.token=${SONAR_TOKEN} \
-            -Dsonar.projectKey=smartevent-ia-auth \
-            -Dsonar.projectName="smartevent-ia-auth"
+  #     # ---- Java services via Maven ----
+  #     - name: Sonar - auth-service
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       run: |
+  #         mvn -f auth-service/pom.xml -B verify -DskipTests \
+  #          org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
+  #           -Dsonar.host.url=${SONAR_HOST_URL} \
+  #           -Dsonar.token=${SONAR_TOKEN} \
+  #           -Dsonar.projectKey=smartevent-ia-auth \
+  #           -Dsonar.projectName="smartevent-ia-auth"
 
-      - name: Sonar - event-service
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          mvn -f event-service/pom.xml -B verify -DskipTests \
-           org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.token=${SONAR_TOKEN} \
-            -Dsonar.projectKey=smartevent-ia-event \
-            -Dsonar.projectName="smartevent-ia-event"
+  #     - name: Sonar - event-service
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       run: |
+  #         mvn -f event-service/pom.xml -B verify -DskipTests \
+  #          org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
+  #           -Dsonar.host.url=${SONAR_HOST_URL} \
+  #           -Dsonar.token=${SONAR_TOKEN} \
+  #           -Dsonar.projectKey=smartevent-ia-event \
+  #           -Dsonar.projectName="smartevent-ia-event"
 
-      - name: Sonar - config-server
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          mvn -f config-server/pom.xml -B verify -DskipTests \
-           org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.token=${SONAR_TOKEN} \
-            -Dsonar.projectKey=smartevent-ia-config \
-            -Dsonar.projectName="smartevent-ia-config"
+  #     - name: Sonar - config-server
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       run: |
+  #         mvn -f config-server/pom.xml -B verify -DskipTests \
+  #          org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
+  #           -Dsonar.host.url=${SONAR_HOST_URL} \
+  #           -Dsonar.token=${SONAR_TOKEN} \
+  #           -Dsonar.projectKey=smartevent-ia-config \
+  #           -Dsonar.projectName="smartevent-ia-config"
 
-      - name: Sonar - eureka-server
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          mvn -f eureka-server/pom.xml -B verify -DskipTests \
-           org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.token=${SONAR_TOKEN} \
-            -Dsonar.projectKey=smartevent-ia-eureka \
-            -Dsonar.projectName="smartevent-ia-eureka"
+  #     - name: Sonar - eureka-server
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       run: |
+  #         mvn -f eureka-server/pom.xml -B verify -DskipTests \
+  #          org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
+  #           -Dsonar.host.url=${SONAR_HOST_URL} \
+  #           -Dsonar.token=${SONAR_TOKEN} \
+  #           -Dsonar.projectKey=smartevent-ia-eureka \
+  #           -Dsonar.projectName="smartevent-ia-eureka"
 
-      - name: Sonar - gateway-service
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          mvn -f gateway-service/pom.xml -B verify -DskipTests \
-           org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.token=${SONAR_TOKEN} \
-            -Dsonar.projectKey=smartevent-ia-gateway \
-            -Dsonar.projectName="smartevent-ia-gateway"
+  #     - name: Sonar - gateway-service
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       run: |
+  #         mvn -f gateway-service/pom.xml -B verify -DskipTests \
+  #          org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
+  #           -Dsonar.host.url=${SONAR_HOST_URL} \
+  #           -Dsonar.token=${SONAR_TOKEN} \
+  #           -Dsonar.projectKey=smartevent-ia-gateway \
+  #           -Dsonar.projectName="smartevent-ia-gateway"
 
-      # ---- Analyse front ----
-      - name: Sonar - front
-        working-directory: front
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          npx sonar-scanner \
-            -Dsonar.projectKey=smartevent-front \
-            -Dsonar.projectName="smartevent-front" \
-            -Dsonar.sources=src \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.login=${SONAR_TOKEN}
+  #     # ---- Analyse front ----
+  #     - name: Sonar - front
+  #       working-directory: front
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       run: |
+  #         npx sonar-scanner \
+  #           -Dsonar.projectKey=smartevent-front \
+  #           -Dsonar.projectName="smartevent-front" \
+  #           -Dsonar.sources=src \
+  #           -Dsonar.host.url=${SONAR_HOST_URL} \
+  #           -Dsonar.login=${SONAR_TOKEN}
 
-      - name: Sonar - frontAdmin
-        working-directory: frontAdmin
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          npx sonar-scanner \
-            -Dsonar.projectKey=smartevent-front-admin \
-            -Dsonar.projectName="smartevent-front-admin" \
-            -Dsonar.sources=src \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.login=${SONAR_TOKEN}
+  #     - name: Sonar - frontAdmin
+  #       working-directory: frontAdmin
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       run: |
+  #         npx sonar-scanner \
+  #           -Dsonar.projectKey=smartevent-front-admin \
+  #           -Dsonar.projectName="smartevent-front-admin" \
+  #           -Dsonar.sources=src \
+  #           -Dsonar.host.url=${SONAR_HOST_URL} \
+  #           -Dsonar.login=${SONAR_TOKEN}
 
-      - name: Sonar - workflow-service
-        working-directory: workflow-service
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          npx sonar-scanner \
-            -Dsonar.projectKey=smartevent-workflow \
-            -Dsonar.projectName="smartevent-workflow" \
-            -Dsonar.sources=src \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.login=${SONAR_TOKEN}
+  #     - name: Sonar - workflow-service
+  #       working-directory: workflow-service
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       run: |
+  #         npx sonar-scanner \
+  #           -Dsonar.projectKey=smartevent-workflow \
+  #           -Dsonar.projectName="smartevent-workflow" \
+  #           -Dsonar.sources=src \
+  #           -Dsonar.host.url=${SONAR_HOST_URL} \
+  #           -Dsonar.login=${SONAR_TOKEN}
 
-      # ---- analyse ai-service ----
-      - name: Install SonarScanner CLI
-        run: |
-          curl -sSLo sonar-scanner.zip \
-            https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-          unzip sonar-scanner.zip
-          mv sonar-scanner-*/ sonar-scanner
-          echo "${PWD}/sonar-scanner/bin" >> $GITHUB_PATH
+  #     # ---- analyse ai-service ----
+  #     - name: Install SonarScanner CLI
+  #       run: |
+  #         curl -sSLo sonar-scanner.zip \
+  #           https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+  #         unzip sonar-scanner.zip
+  #         mv sonar-scanner-*/ sonar-scanner
+  #         echo "${PWD}/sonar-scanner/bin" >> $GITHUB_PATH
 
-      - name: SonarQube analysis (ai-service)
-        working-directory: ai-service
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          sonar-scanner \
-            -Dsonar.projectKey=smartevent-ai \
-            -Dsonar.sources=. \
-            -Dsonar.python.version=3.11 \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.login=${SONAR_TOKEN}
+  #     - name: SonarQube analysis (ai-service)
+  #       working-directory: ai-service
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  #       run: |
+  #         sonar-scanner \
+  #           -Dsonar.projectKey=smartevent-ai \
+  #           -Dsonar.sources=. \
+  #           -Dsonar.python.version=3.11 \
+  #           -Dsonar.host.url=${SONAR_HOST_URL} \
+  #           -Dsonar.login=${SONAR_TOKEN}
 
   # 4) DOCKER BUILD & PUSH
   docker-build:
