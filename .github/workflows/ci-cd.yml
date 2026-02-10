@@ -327,7 +327,11 @@ jobs:
             cd /home/azureuser/smartevent-ia
             git checkout dev
             git pull origin dev
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER }}" --password-stdin || true
+            kubectl -n default delete secret ghcr-secret --ignore-not-found
+            kubectl -n default create secret docker-registry ghcr-secret \
+            --docker-server=ghcr.io \
+            --docker-username="${{ secrets.GHCR_USER }}" \
+            --docker-password="${{ secrets.GHCR_TOKEN }}" \
 
             # Appliquer les manifests Kubernetes
             kubectl apply -f eureka-server/k8s/
