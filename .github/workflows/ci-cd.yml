@@ -272,7 +272,7 @@ jobs:
   # 4) DOCKER BUILD & PUSH
   docker-build:
     runs-on: ubuntu-latest
-    # needs:
+    needs: build
     #   - analyze_semgrep
     #   - analyze_sonar
     permissions:
@@ -330,5 +330,5 @@ jobs:
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USER }}" --password-stdin || true
 
             # Appliquer les manifests Kubernetes
-            kubectl apply -f smartevent-ia/eureka-server/k8s/
-            kubectl apply -f smartevent-ia/config-server/k8s/
+            kubectl apply -f eureka-server/k8s/
+            kubectl apply -f config-server/k8s/
