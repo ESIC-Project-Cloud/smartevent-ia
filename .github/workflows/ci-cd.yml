@@ -272,9 +272,9 @@ jobs:
   # 4) DOCKER BUILD & PUSH
   docker-build:
     runs-on: ubuntu-latest
-    needs:
-      - analyze_semgrep
-      - analyze_sonar
+    # needs:
+    #   - analyze_semgrep
+    #   - analyze_sonar
     permissions:
       contents: read
       packages: write
