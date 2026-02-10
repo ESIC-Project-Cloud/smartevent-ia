@@ -15,7 +15,7 @@ spec:
       securityContext:
         runAsNonRoot: true
       nodeSelector:
-        role: micro
+        role: front
       containers:
       - name: config-server
         securityContext:
