@@ -20,7 +20,7 @@ spec:
       - name: config-server
         securityContext:
           allowPrivilegeEscalation: false
-        image: smartevent-ia-config-server:latest
+        image: ghcr.io/esic-project-cloud/smartevent-ia-config-server:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8888

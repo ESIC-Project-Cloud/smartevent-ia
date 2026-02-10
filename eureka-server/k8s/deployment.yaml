@@ -20,7 +20,7 @@ spec:
       - name: eureka-server
         securityContext:
           allowPrivilegeEscalation: false
-        image: smartevent-ia-eureka-server:latest
+        image: ghcr.io/esic-project-cloud/smartevent-ia-eureka-server:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
